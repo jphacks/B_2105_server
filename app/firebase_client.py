@@ -10,18 +10,23 @@ class FirebaseClient:
         'storageBucket': 'techinterview-a88b9.appspot.com.appspot.com'
     })
 
-    def upload_movie(self, uid, document_id, result_movie):
+    def upload_movie(uid, document_id, result_movie):
         db = firestore.client()
         doc_ref = db.collection('user').document(uid).collection('interview').document(document_id)
         doc_ref.update({
             'movie_id': result_movie
         })
 
-    def upload_result(self, uid, document_id, result_emotion):
+    def upload_result(uid, document_id, result_emotions,result_impressions):
+        result_emotions.update(result_impressions)
+        for key,value in result_emotions.items():
+            if int(value) < 0:
+              result_emotions[key] = 0
+
         db = firestore.client()
         doc_ref = db.collection('user').document(uid).collection('interview').document(document_id)
         doc_ref.update({
-            'result': result_emotion,
+            'result': result_emotions,
         })
 
     def get_current_user(self, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
@@ -39,10 +44,14 @@ class FirebaseClient:
 
         return uid
 
-# result_emotion = {"anger": 0.07870, "contempt": 0.078709, "disgust": 0.078709, "fear": 0.000000, "happiness": 99.134199,
-#                   "sadness": 0.511610, "surprise": 0.118064}
 
-# 呼び出し（引数＝ユーザーID、documentID、動画URL,分析結果の配列）
-# upload_all("q0REUe0hbYbacVskUlgVQKz1pd33", "BJaroA3FiEJpO9JKjYqZ", "aaaaaa", result_emotion).upload_movie()
+# 呼び出し（引数＝ユーザーID、documentID、動画URL,表情の配列,印象の配列）
+# result_emotions = {"anger": 12, "contempt": 22, "disgust": 33, "fear": 44, "happiness": 55,
+#                   "sadness": 66, "surprise": 77}
 
-# upload_all("q0REUe0hbYbacVskUlgVQKz1pd33", "BJaroA3FiEJpO9JKjYqZ", "aaaaaa", result_emotion).upload_result()
+# result_impressions = {"honest": 39.97834336927723, "confidence": 26.460891949863026, "leadership": 35.65540659219143, "anxious": 336.35048017028286, "anxious": -32.80743136616357,
+#                   "nervous": -26.27180524020688}
+
+
+
+# FirebaseClient.upload_result("xmkjt589JgTbhbOUlVCvvLh6ILO2", "X7VvOEU9JxKbU7cLDBfw", result_emotions,result_impressions)
