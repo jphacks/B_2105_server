@@ -2,6 +2,6 @@ version: "3.9"  # optional since v1.27.0
 services:
   server:
     build: .
-    image: fast-api
+    image: jphacks-server
     ports:
       - "8080:8080"
