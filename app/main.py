@@ -1,25 +1,24 @@
-from typing import List
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks, WebSocket, Form
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Form, Depends
 from gcloud import storage
-from os import environ
+import os
 import uvicorn
+from secrets import token_hex
+from firebase_client import FirebaseClient
+from fastapi.responses import FileResponse
 
-# from typing import Optional
-# from pydantic import BaseModel
-# from fastapi.responses import HTMLResponse
-
+os.environ["GCLOUD_PROJECT"] = "ornate-genre-330308"
 app = FastAPI()
+firebase_client = FirebaseClient()
+storage_client = storage.Client.from_service_account_json('cred.json')
 
 
-def upload_to_bucket(data, file_name):
+def upload_to_bucket(data, uid, document_id, file_name):
     """ Upload data to a bucket"""
-    storage_client = storage.Client.from_service_account_json('cred.json')
-
     bucket = storage_client.get_bucket("ornate-genre-330308_cloudbuild")
     blob = bucket.blob(file_name)
     blob.upload_from_string(data=data, content_type="video/mp4")
 
-    return blob.public_url
+    firebase_client.upload_movie(uid=uid, document_id=document_id, result_movie=blob.public_url)
 
 
 @app.get('/')
@@ -29,8 +28,8 @@ def health():
 
 @app.post('/upload_movie', status_code=201)
 async def upload_movie(background_tasks: BackgroundTasks,
-                       user_id: str = Form(...),
-                       question_id: str = Form(...),
+                       uid=Depends(firebase_client.get_current_user),
+                       interview_id: str = Form(...),
                        file: UploadFile = File(...)):
     """
     Adds upload_movie task to worker queue.
@@ -39,38 +38,23 @@ async def upload_movie(background_tasks: BackgroundTasks,
         return {
             'file content error': f'please upload video/mp4 content file. your uploaded file is {file.content_type} content.'}
     data = file.file.read()
-    filename = f"{user_id}/{file.filename}"
-    print(question_id)
+    filename = f"{uid}/{token_hex(8)}.mp4"
 
-    background_tasks.add_task(upload_to_bucket, data, filename)
+    background_tasks.add_task(upload_to_bucket, data, uid, interview_id, filename)
     return {"message": "Video uploaded"}
 
 
-class ConnectionManager:
-    def __init__(self):
-        self.connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.connections.append(websocket)
-
-    async def broadcast(self, data: str):
-        for connection in self.connections:
-            await connection.send_text(data)
-
-
-manager = ConnectionManager()
-
-
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
-    while True:
-        data = await websocket.receive_text()
-        await manager.broadcast(f"Client {client_id}: {data}")
+@app.get('/download_movie')
+async def download_movie(uid=Depends(firebase_client.get_current_user), movie_id: str = Form(...)):
+    filename = f"{uid}/{movie_id}.mp4"
+    bucket = storage_client.get_bucket("ornate-genre-330308_cloudbuild")
+    blob = bucket.blob(filename)
+    with open("temp.mp4", 'wb') as f:
+        blob.download_to_file(f)
+    return FileResponse("temp.mp4")
 
 
 if __name__ == "__main__":
-    port = int(environ.get('PORT', 8080))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    port = int(os.environ.get("PORT", 8080))
     print(f"listening on port {port}")

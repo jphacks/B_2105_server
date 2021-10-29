@@ -3,8 +3,6 @@
 docker-stack.yml
 .env
 
-
-
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows
 
@@ -18,7 +16,8 @@ docker-stack.yml
 Icon
 .idea
 venv
-cred.json
+app/cred.json
+app/firebase-credential.json
 
 # Thumbnails
 ._*
