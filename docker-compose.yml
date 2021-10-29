@@ -1,7 +1,7 @@
-version: "3.9"  # optional since v1.27.0
+version: "3.9"
 services:
   server:
     build: .
-    image: jphacks-server
+    image: gcr.io/ornate-genre-330308/jphacks-server:latest
     ports:
       - "8080:8080"
