@@ -42,8 +42,8 @@ jobs:
 
     - name: Build and Push Container
       run: |-
-        docker build . -t gcr.io/${{ secrets.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
-        docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+        docker build . -t gcr.io/ornate-genre-330308/${{ env.SERVICE }}:${{  github.sha }}
+        docker push gcr.io/ornate-genre-330308/${{ env.SERVICE }}:${{  github.sha }}
         
     - name: Deploy to Cloud Run
       id: deploy
