@@ -17,6 +17,8 @@ docker-stack.yml
 # Icon must end with two \r
 Icon
 
+venv
+cred.json
 
 # Thumbnails
 ._*
