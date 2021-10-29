@@ -1,0 +1,9 @@
+fastapi~=0.70.0
+uvicorn~=0.15.0
+sqlalchemy~=1.4.26
+passlib~=1.7.4
+bcrypt
+python-jose
+python-multipart
+pydantic~=1.8.2
+gcloud~=0.18.3
