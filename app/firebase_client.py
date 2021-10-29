@@ -39,6 +39,7 @@ class FirebaseClient:
 
         return uid
 
+
 # result_emotion = {"anger": 0.07870, "contempt": 0.078709, "disgust": 0.078709, "fear": 0.000000, "happiness": 99.134199,
 #                   "sadness": 0.511610, "surprise": 0.118064}
 
