@@ -1,3 +1,4 @@
+import os
 import requests
 import numpy as np
 import cv2
@@ -20,9 +21,10 @@ def emotion_api(file):
     cascade = cv2.CascadeClassifier(cascade_path)
 
     # Faceの設定
-    subscription_key = '5965fecf9f004231841163fbf7abc694'  # ここに取得したキー１を入力
+    subscription_key = os.getenv("subscription") # ここに取得したキー１を入力
     assert subscription_key
-    face_api_url = 'https://facial-emotion.cognitiveservices.azure.com/face/v1.0/detect'  # ここに取得したエンドポイントのURLを入力
+    face_api_url = os.getenv("get url") # ここに取得したエンドポイントのURLを入力
+
     from random import sample
 
     video = list()
