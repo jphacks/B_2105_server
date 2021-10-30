@@ -1,5 +1,4 @@
 import os
-
 import requests
 import numpy as np
 import cv2
@@ -25,6 +24,7 @@ def emotion_api(file):
     subscription_key = os.getenv("subscription") # ここに取得したキー１を入力
     assert subscription_key
     face_api_url = os.getenv("get url") # ここに取得したエンドポイントのURLを入力
+
     from random import sample
 
     video = list()
