@@ -8,3 +8,7 @@ python-multipart
 pydantic~=1.8.2
 gcloud~=0.18.3
 firebase-admin
+pandas
+numpy
+requests
+httplib2==0.15.0
