@@ -1,4 +1,5 @@
-import os
+import time
+
 import requests
 import numpy as np
 import cv2
@@ -6,24 +7,23 @@ from datetime import datetime
 import pandas as pd
 
 
-def emotion_api(file):
-    location_videofile = file
-
-    cap = cv2.VideoCapture(location_videofile)  # 0にするとmacbookのカメラ、1にすると外付けのUSBカメラにできる
+def emotion_api(video_file):
+    cap = cv2.VideoCapture(video_file)  # 0にするとmacbookのカメラ、1にすると外付けのUSBカメラにできる
+    cap.get(2)
     data_name = ["anger", "contempt", "disgust", "fear", "happiness", 'sadness', 'surprise']  # 保存データの系列
-    emotion_data = [0, 0, 0, 0, 0, 0, 0]  # 初期値
-    cal = [0, 0, 0, 0, 0, 0, 0]
+    emotion_data = [0] * 7  # 初期値
+    cal = [0] * 7
     count = 0  # 撮影回数を示すカウンタ
     percent = None
 
     # 顔認識の設定
-    cascade_path = 'haarcascade_frontalface_alt.xml'  # 顔判定で使うxmlファイルを指定する。(opencvのpathを指定)
+    cascade_path = 'dataset/haarcascade_frontalface_alt.xml'  # 顔判定で使うxmlファイルを指定する。(opencvのpathを指定)
     cascade = cv2.CascadeClassifier(cascade_path)
 
     # Faceの設定
-    subscription_key = os.getenv("subscription") # ここに取得したキー１を入力
+    subscription_key = "ea98d7f8c3054d4b8f5b6034f2a611dd"  # ここに取得したキー１を入力
     assert subscription_key
-    face_api_url = os.getenv("get url") # ここに取得したエンドポイントのURLを入力
+    face_api_url = "https://jphacks-emotion.cognitiveservices.azure.com/face/v1.0/detect" # ここに取得したエンドポイントのURLを入力
 
     from random import sample
 
@@ -42,9 +42,10 @@ def emotion_api(file):
             cap.release()
             break
 
-    new_video = []
-    new_video += sample(video, 5)
+    new_video = video
+    # new_video += sample(video, 5)
     for frame in new_video:
+        time.sleep(3)
         now = datetime.now()  # 撮影時間
         image_data = cv2.imencode('.jpg', frame)[1].tobytes()
         # image_data = open(filename, "rb").read()  # 処理をする画像を選択
@@ -60,6 +61,7 @@ def emotion_api(file):
                                  params=params, data=image_data)
         response.raise_for_status()
         analysis = response.json()  # json出力
+        print(analysis)
 
         if analysis:
             result = [analysis[0]['faceAttributes']['emotion']['anger'],
@@ -74,7 +76,7 @@ def emotion_api(file):
             df = pd.DataFrame({now: emotion_data}, index=data_name)  # 取得データをDataFrame1に変換しdfとして定
             if count != 0:
                 df = pd.concat([df_past, df], axis=1, sort=False)  # dfを更新
-                # print(df)
+                print(df)
 
             count = count + 1  # 撮影回数の更新
             df_past = df  # df_pastを更新
@@ -120,4 +122,8 @@ def emotion_api(file):
                           "leadership": leadership, "anxious": anxious, "niceCoworker": niceCowoker,
                           "nervous": nervous}
 
-    return result_emotions,result_impressions
+    print(result_emotions)
+
+
+if __name__ == "__main__":
+    emotion_api("../samples/sample.mp4")

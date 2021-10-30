@@ -16,8 +16,7 @@ docker-stack.yml
 Icon
 .idea
 venv
-app/cred.json
-app/firebase-credential.json
+app/secret/*
 
 # Thumbnails
 ._*

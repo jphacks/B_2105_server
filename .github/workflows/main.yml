@@ -19,9 +19,11 @@ on:
 
 name: Build and Deploy a Container
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  PROJECT_ID: ${{ secret.GCP_PROJECT }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
   SERVICE: jphacks-server
   REGION: asia-northeast2
+  IMAGE: gcr.io/${{ secrets.GCP_PROJECT }}/example-app:${{ github.sha }}
 
 jobs:
   deploy:
@@ -34,7 +36,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v0.2.0
       with:
         project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        service_account_key: ${{ secret.GCP_SA_KEY }}
         export_default_credentials: true  # Set to true to authenticate the Cloud Run action
 
     - name: Authorize Docker push
@@ -42,15 +44,15 @@ jobs:
 
     - name: Build and Push Container
       run: |-
-        docker build . -t gcr.io/ornate-genre-330308/${{ env.SERVICE }}:${{  github.sha }}
-        docker push gcr.io/ornate-genre-330308/${{ env.SERVICE }}:${{  github.sha }}
+        docker build . -t ${{ env.IMAGE }}
+        docker push ${{ env.IMAGE }}
         
     - name: Deploy to Cloud Run
       id: deploy
       uses: google-github-actions/deploy-cloudrun@v0.4.0
       with:
         service: ${{ env.SERVICE }}
-        image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+        image: ${{ env.IMAGE }}
         region: ${{ env.REGION }}
 
     - name: Show Output
