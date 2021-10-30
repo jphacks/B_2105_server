@@ -17,11 +17,12 @@ class FirebaseClient:
             'movie_id': result_movie
         })
 
-    def upload_result(self, uid, document_id, result_emotion):
+    def upload_result(self, uid, document_id, result_emotions, result_impressions):
         db = firestore.client()
         doc_ref = db.collection('user').document(uid).collection('interview').document(document_id)
         doc_ref.update({
-            'result': result_emotion,
+            'result_emotions': result_emotions,
+            'result_impressions': result_impressions
         })
 
     def get_current_user(self, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
@@ -38,7 +39,6 @@ class FirebaseClient:
         uid = decoded_token['uid']
 
         return uid
-
 
 # result_emotion = {"anger": 0.07870, "contempt": 0.078709, "disgust": 0.078709, "fear": 0.000000, "happiness": 99.134199,
 #                   "sadness": 0.511610, "surprise": 0.118064}
