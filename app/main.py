@@ -5,20 +5,37 @@ import uvicorn
 from secrets import token_hex
 from firebase_client import FirebaseClient
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from emotion_api import emotion_api
 
 os.environ["GCLOUD_PROJECT"] = "ornate-genre-330308"
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 firebase_client = FirebaseClient()
 storage_client = storage.Client.from_service_account_json('cred.json')
 
 
 def upload_to_bucket(data, uid, document_id, file_name):
     """ Upload data to a bucket"""
-    bucket = storage_client.get_bucket("ornate-genre-330308_cloudbuild")
+    bucket = storage_client.get_bucket("jphacks")
     blob = bucket.blob(file_name)
     blob.upload_from_string(data=data, content_type="video/mp4")
 
-    firebase_client.upload_movie(uid=uid, document_id=document_id, result_movie=blob.public_url)
+    with open("temp.mp4", 'wb') as f:
+        f.write(data)
+    result_emotion, result_impression = emotion_api("temp.mp4")
+    id = uid.pop()
+    firebase_client.upload_movie(uid=id, document_id=document_id, result_movie=file_name)
+    firebase_client.upload_result(uid=id, document_id=document_id, result_emotions=result_emotion,
+                                  result_impressions=result_impression)
 
 
 @app.get('/')
@@ -40,7 +57,7 @@ async def upload_movie(background_tasks: BackgroundTasks,
     data = file.file.read()
     filename = f"{uid}/{token_hex(8)}.mp4"
 
-    background_tasks.add_task(upload_to_bucket, data, uid, interview_id, filename)
+    background_tasks.add_task(upload_to_bucket, data, {uid}, interview_id, filename)
     return {"message": "Video uploaded"}
 
 
