@@ -84,24 +84,24 @@ def emotion_api(video_file):
             cal = (df.sum(axis=1, skipna=True) / df.to_numpy().sum())
             percent = cal * 100
 
-    honest = (-3.536945) * cal['anger'] + (-0.003553) * cal['contempt'] + (3.603171) * cal[
-        'disgust'] + (-9.930411) * cal['fear'] + (2.075296) * cal['happiness'] + (4.816988) * cal[
-                 'sadness'] + (3.227738) * cal['surprise'] + (0.07189923925578044)
-    confidence = (0.315414) * cal['anger'] + (0.430329) * cal['contempt'] + (-0.707628) * cal[
-        'disgust'] + (-9.235996) * cal['fear'] + (1.136739) * cal['happiness'] + (4.790115) * cal[
-                     'sadness'] + (3.570750) * cal['surprise'] + (0.07357999007209934)
-    leadership = (-2.096394) * cal['anger'] + (0.054996) * cal['contempt'] + (2.265064) * cal[
-        'disgust'] + (-8.790275) * cal['fear'] + (1.941947) * cal['happiness'] + (3.659011) * cal[
-                     'sadness'] + (3.342414) * cal['surprise'] + (0.051826723716245596)
-    niceCowoker = (-5.196182) * cal['anger'] + (-0.381129) * cal['contempt'] + (5.767330) * cal[
-        'disgust'] + (-9.043258) * cal['fear'] + (2.025452) * cal['happiness'] + (3.570378) * cal[
-                      'sadness'] + (3.483190) * cal['surprise'] + (0.039110747404379254)
-    anxious = (2.262031) * cal['anger'] + (0.015123) * cal['contempt'] + (-2.364740) * cal[
-        'disgust'] + (5.559835) * cal['fear'] + (-1.892181) * cal['happiness'] + (-2.217211) * cal[
-                  'sadness'] + (-1.223585) * cal['surprise'] + (-0.08040851038993796)
-    nervous = (0.540086) * cal['anger'] + (0.068549) * cal['contempt'] + (-0.405309) * cal[
-        'disgust'] + (3.006133) * cal['fear'] + (-1.562904) * cal['happiness'] + (-1.568253) * cal[
-                  'sadness'] + (0.345784) * cal['surprise'] + (-0.04618933147625519)
+    honest = (52280.606593) * percent['anger'] + (52280.615729) * percent['contempt'] + (52279.892070) * percent[
+        'disgust'] + (52280.245897) * percent['fear'] + (52280.648301) * percent['happiness'] + (52280.639561) * percent[
+                 'sadness'] + (52280.638808) * percent['surprise'] + (-5228060.324772324)
+    confidence = (45948.874900) * percent['anger'] + ( 45948.901872) * percent['contempt'] + (45948.562104) * percent[
+        'disgust'] + (45948.671443) * percent['fear'] + (45948.945392) * percent['happiness'] + (45948.932109) * percent[
+                     'sadness'] + (45948.923942) * percent['surprise'] + (-4594889.890189231)
+    leadership = (-56125.315486) * percent['anger'] + (56125.291467) * percent['contempt'] + (56124.734395) * percent[
+        'disgust'] + (56125.074472) * percent['fear'] + ( 56125.324700) * percent['happiness'] + (56125.313211) * percent[
+                     'sadness'] + (56125.302735) * percent['surprise'] + (0-5612528.268499151)
+    niceCowoker = (65148.270992) * percent['anger'] + (65148.327761) * percent['contempt'] + ( 65147.862069) * percent[
+        'disgust'] + (-65148.065374) * percent['fear'] + (65148.362371) * percent['happiness'] + (65148.353771) * percent[
+                      'sadness'] + (65148.348149) * percent['surprise'] + (-6514832.054117618)
+    anxious = (-4042.326116) * percent['anger'] + (-4042.233209) * percent['contempt'] + (-4042.249229) * percent[
+        'disgust'] + (-4042.504887) * percent['fear'] + (-4042.254423) * percent['happiness'] + (-4042.239087) * percent[
+                  'sadness'] + (-4042.235853) * percent['surprise'] + (404227.11271251354)
+    nervous = (-44771.912270) * percent['anger'] + (-44771.819912) * percent['contempt'] + ( -44771.836730) * percent[
+        'disgust'] + (-44772.024092) * percent['fear'] + (-44771.841884) * percent['happiness'] + ( -44771.832570) * percent[
+                  'sadness'] + (-44771.824220) * percent['surprise'] + (4477185.820396536)
     honest = (honest / 6) * 100
     confidence = (confidence / 6) * 100
     leadership = (leadership / 6) * 100
