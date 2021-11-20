@@ -39,7 +39,7 @@
 ### 独自技術
 #### 印象予測機能
 * Face API を活用して画像から感情のデータを獲得した。そして、「誠実そう」、「自信ある」、「リーダーシップありそう」、「一緒に働きたい」、「緊張しているように見える」、「不安そうに見える」と言ったアンケートからの印象データを目的変数とし、重回帰分析を行うことで、感情データから印象を予測できるモデルを作成した。
-* <img width="624" alt="Screen Shot 2021-10-30 at 10 16 11" src="https://user-images.githubusercontent.com/78252529/139518017-a41bea5f-1b22-47fc-a2d4-603ece78ffe6.png">
+*<img width="644" alt="Screen Shot 2021-11-20 at 9 31 33" src="https://user-images.githubusercontent.com/78252529/142713352-203ec54b-1e4f-47f5-941d-c516c473e41c.png">
 
 
 
